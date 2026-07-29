@@ -43,7 +43,7 @@
     "date_display": "29 July 2026",
     "read": 5,
     "excerpt": "For most NRIs, investing in India has always meant the same trade-off: convert your dollars to rupees, accept Indian tax and paperwork, and hope the rupee does not undo your returns on the way out. GIFT City...",
-    "published": false,
+    "published": true,
     "listing_card": "        <article class=\"insight-card insight-card--featured reveal\">\n          <div class=\"insight-card-meta\">\n            <span class=\"insight-category\">Investments</span>\n            <span class=\"insight-meta-dot\">·</span>\n            <time datetime=\"2026-07-29\">29 July 2026</time>\n            <span class=\"insight-meta-dot\">·</span>\n            <span class=\"insight-read-time\">5 min read</span>\n          </div>\n          <h2 class=\"insight-title\">\n            <a href=\"/blogs/investing-in-india-gift-city\">Investing in India Through GIFT City: <em>Dollar Funds, Tax Neutrality, and the Mechanics</em></a>\n          </h2>\n          <p class=\"insight-excerpt\">For most NRIs, investing in India has always meant the same trade-off: convert your dollars to rupees, accept Indian tax and paperwork, and hope the rupee does not undo your returns on the way out. GIFT City...</p>\n          <a href=\"/blogs/investing-in-india-gift-city\" class=\"insight-cta\">Read the piece <span class=\"insight-cta-arrow\">&rarr;</span></a>\n        </article>\n",
     "sitemap_url": "  <url>\n    <loc>https://seleqtwealth.in/blogs/investing-in-india-gift-city</loc>\n    <lastmod>2026-07-29</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n"
   },
