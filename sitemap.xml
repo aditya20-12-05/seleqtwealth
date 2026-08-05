@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://seleqtwealth.in/blogs</loc>
-    <lastmod>2026-07-29</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -93,6 +93,12 @@
   <url>
     <loc>https://seleqtwealth.in/blogs/investing-in-india-gift-city</loc>
     <lastmod>2026-07-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seleqtwealth.in/blogs/nri-repatriation-money-out-of-india</loc>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

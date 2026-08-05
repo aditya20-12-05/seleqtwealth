@@ -55,7 +55,7 @@
     "date_display": "5 August 2026",
     "read": 5,
     "excerpt": "Getting money into India is easy. Getting it back out is where NRIs lose weeks. The rules are not actually complicated, but they are unforgiving about documentation, and a single missing certificate can hold...",
-    "published": false,
+    "published": true,
     "listing_card": "        <article class=\"insight-card insight-card--featured reveal\">\n          <div class=\"insight-card-meta\">\n            <span class=\"insight-category\">Taxation</span>\n            <span class=\"insight-meta-dot\">·</span>\n            <time datetime=\"2026-08-05\">5 August 2026</time>\n            <span class=\"insight-meta-dot\">·</span>\n            <span class=\"insight-read-time\">5 min read</span>\n          </div>\n          <h2 class=\"insight-title\">\n            <a href=\"/blogs/nri-repatriation-money-out-of-india\">Moving Money Out of India as an NRI: <em>The USD 1 Million Scheme and the Paperwork That Stalls It</em></a>\n          </h2>\n          <p class=\"insight-excerpt\">Getting money into India is easy. Getting it back out is where NRIs lose weeks. The rules are not actually complicated, but they are unforgiving about documentation, and a single missing certificate can hold...</p>\n          <a href=\"/blogs/nri-repatriation-money-out-of-india\" class=\"insight-cta\">Read the piece <span class=\"insight-cta-arrow\">&rarr;</span></a>\n        </article>\n",
     "sitemap_url": "  <url>\n    <loc>https://seleqtwealth.in/blogs/nri-repatriation-money-out-of-india</loc>\n    <lastmod>2026-08-05</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n"
   },
