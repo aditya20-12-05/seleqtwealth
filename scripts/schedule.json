@@ -67,7 +67,7 @@
     "date_display": "12 August 2026",
     "read": 5,
     "excerpt": "In July 2024, India rewrote its capital gains tax rules in a single stroke, and the dust has now settled. Holding periods were simplified, rates were reset, and indexation, the inflation adjustment that...",
-    "published": false,
+    "published": true,
     "listing_card": "        <article class=\"insight-card insight-card--featured reveal\">\n          <div class=\"insight-card-meta\">\n            <span class=\"insight-category\">Taxation</span>\n            <span class=\"insight-meta-dot\">·</span>\n            <time datetime=\"2026-08-12\">12 August 2026</time>\n            <span class=\"insight-meta-dot\">·</span>\n            <span class=\"insight-read-time\">5 min read</span>\n          </div>\n          <h2 class=\"insight-title\">\n            <a href=\"/blogs/new-capital-gains-rules-one-year-on\">The New Capital Gains Rules: <em>What Changed for Equity, Debt, Gold and Property</em></a>\n          </h2>\n          <p class=\"insight-excerpt\">In July 2024, India rewrote its capital gains tax rules in a single stroke, and the dust has now settled. Holding periods were simplified, rates were reset, and indexation, the inflation adjustment that...</p>\n          <a href=\"/blogs/new-capital-gains-rules-one-year-on\" class=\"insight-cta\">Read the piece <span class=\"insight-cta-arrow\">&rarr;</span></a>\n        </article>\n",
     "sitemap_url": "  <url>\n    <loc>https://seleqtwealth.in/blogs/new-capital-gains-rules-one-year-on</loc>\n    <lastmod>2026-08-12</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n"
   },
