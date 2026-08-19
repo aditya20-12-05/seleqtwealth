@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://seleqtwealth.in/blogs</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -105,6 +105,12 @@
   <url>
     <loc>https://seleqtwealth.in/blogs/new-capital-gains-rules-one-year-on</loc>
     <lastmod>2026-08-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seleqtwealth.in/blogs/debt-mutual-funds-after-indexation</loc>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
