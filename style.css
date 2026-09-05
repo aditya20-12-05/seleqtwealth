@@ -4928,6 +4928,117 @@ html.intro-running .hero-wordmark-spotlight {
 }
 
 /* ============================================
+   GFF 2026 WELCOME RIBBON
+   Time-boxed event bar, shown only when <html> has .gff-on (set pre-paint in
+   index.html for the fest date window). Sits above the fixed nav; its height is
+   measured into --gff-h by main.js so the nav offset stays correct responsively.
+   ============================================ */
+.gff-ribbon { display: none; }
+html.gff-on { --gff-h: 56px; }
+html.gff-on #navbar { top: var(--gff-h); }
+html.gff-on .gff-ribbon {
+  display: block;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1001;
+  background: linear-gradient(90deg, var(--navy-deep, #060e1c), var(--navy));
+  border-bottom: 1px solid var(--border-gold);
+  transform: translateY(-100%);
+  transition: transform 0.55s var(--ease-out);
+}
+html.gff-on .gff-ribbon.is-visible { transform: translateY(0); }
+.gff-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 9px 48px;
+}
+.gff-label {
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--navy-deep, #060e1c);
+  background: var(--gold);
+  padding: 5px 10px;
+  border-radius: 2px;
+}
+.gff-msg {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--white-dim, rgba(244, 241, 234, 0.86));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gff-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.gff-btn {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  padding: 9px 16px;
+  border-radius: 2px;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.gff-btn--wa { background: var(--gold); color: var(--navy-deep, #060e1c); }
+.gff-btn--wa:hover { background: var(--gold-light); transform: translateY(-1px); }
+.gff-btn--wa svg { display: block; }
+.gff-btn--call { color: var(--white); border-color: var(--white-faint, rgba(244, 241, 234, 0.28)); }
+.gff-btn--call:hover { border-color: var(--gold); color: var(--gold); }
+.gff-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--white-faint, rgba(244, 241, 234, 0.5));
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: color 0.2s;
+}
+.gff-close:hover { color: var(--white); }
+.gff-btn:focus-visible,
+.gff-close:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+@media (max-width: 900px) {
+  .gff-inner { padding: 9px 24px; gap: 12px; }
+  .gff-msg { font-size: 0.84rem; }
+}
+@media (max-width: 640px) {
+  .gff-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 11px 14px 12px;
+    position: relative;
+  }
+  .gff-label { display: none; }
+  .gff-msg {
+    white-space: normal;
+    overflow: visible;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    padding-right: 24px;
+  }
+  .gff-actions { gap: 8px; }
+  .gff-btn { flex: 1; justify-content: center; padding: 10px; }
+  .gff-close { position: absolute; top: 8px; right: 10px; }
+}
+
+/* ============================================
    ACCESSIBILITY — keyboard focus rings
    Restores visible focus indication that the legacy `outline: none`
    rules suppressed. Only fires for keyboard navigation, not mouse clicks.
