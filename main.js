@@ -1432,49 +1432,150 @@ function isInViewport(el) {
   });
 })();
 
-// ── GFF 2026 welcome pop-up ─────────────────────────────────────────
-// Shown only during the fest window (html.gff-on is set pre-paint in
-// index.html, or via ?gff). Opens shortly after load, tracks the two CTAs
-// (consent-gated via seleqtTrack), closes on x / scrim / Escape, and remembers
-// dismissal for the window (never in ?gff preview mode).
+// ── Developer ("coder") theme control ───────────────────────────────
+// Site-wide and remembered (localStorage seleqt_theme). The pre-paint script in
+// every page's <head> applies it before first paint; this wires the toggle(s)
+// and shows a floating "exit" chip on any page while the theme is on, so a
+// visitor is never stranded in it away from the GFF bar. Runs on every page.
+(function() {
+  let exitChip = null;
+
+  function refreshChip(on) {
+    if (on && !exitChip) {
+      exitChip = document.createElement('button');
+      exitChip.type = 'button';
+      exitChip.className = 'coder-exit';
+      exitChip.setAttribute('aria-label', 'Exit developer theme');
+      exitChip.innerHTML = '&lt;/&gt; Exit dev mode';
+      exitChip.addEventListener('click', () => window.seleqtSetTheme(false));
+      document.body.appendChild(exitChip);
+    }
+    if (exitChip) exitChip.hidden = !on;
+  }
+
+  window.seleqtSetTheme = function(coder) {
+    document.documentElement.classList.toggle('theme-coder', coder);
+    try { localStorage.setItem('seleqt_theme', coder ? 'coder' : 'default'); } catch (e) {}
+    document.querySelectorAll('.gff-switch-input').forEach((el) => { el.checked = coder; });
+    refreshChip(coder);
+    window.seleqtTrack('theme_toggle', { theme: coder ? 'coder' : 'default' });
+  };
+
+  refreshChip(document.documentElement.classList.contains('theme-coder'));
+})();
+
+// ── GFF 2026 pop-up + docked bar ────────────────────────────────────
+// Flow: the pop-up opens ~1s after arrival with a 15s quiet timer (paused while
+// hovered); on close (x / backdrop / Esc) or timeout it collapses to a bar
+// pinned at the top. Clicking the bar reopens the pop-up. The bar carries the
+// CTAs and the developer-theme switch. "Docked" is remembered for the window;
+// ?gff preview always starts at the pop-up and persists nothing.
 (function() {
   if (!document.documentElement.classList.contains('gff-on')) return;
   const overlay = document.getElementById('gffModal');
-  if (!overlay) return;
+  const bar = document.getElementById('gffBar');
+  if (!overlay || !bar) return;
+  const card = overlay.querySelector('.gff-modal');
+  const progress = document.getElementById('gffProgress');
   const isPreview = document.documentElement.classList.contains('gff-preview');
-  let open = false;
+  const AUTO_MS = 15000;
 
-  function show() {
-    open = true;
+  let modalOpen = false;
+  let timerId = null;
+  let endAt = 0;
+  let remaining = AUTO_MS;
+
+  function syncBarHeight() {
+    document.documentElement.style.setProperty('--gff-bar-h', bar.offsetHeight + 'px');
+  }
+
+  function runProgress(ms, fromWidth) {
+    if (!progress) return;
+    progress.style.transition = 'none';
+    progress.style.width = (fromWidth != null ? fromWidth : '100%');
+    void progress.offsetWidth;                 // reflow so the next change animates
+    progress.style.transition = 'width ' + ms + 'ms linear';
+    progress.style.width = '0%';
+  }
+  function startTimer() {
+    clearTimeout(timerId);
+    remaining = AUTO_MS;
+    endAt = Date.now() + remaining;
+    runProgress(remaining);
+    timerId = setTimeout(dock, remaining);
+  }
+  function pauseTimer() {
+    if (!modalOpen || !timerId) return;
+    clearTimeout(timerId); timerId = null;
+    remaining = Math.max(endAt - Date.now(), 0);
+    if (progress) {
+      const w = getComputedStyle(progress).width;
+      progress.style.transition = 'none';
+      progress.style.width = w;
+    }
+  }
+  function resumeTimer() {
+    if (!modalOpen || timerId || remaining <= 0) return;
+    endAt = Date.now() + remaining;
+    runProgress(remaining, progress ? getComputedStyle(progress).width : null);
+    timerId = setTimeout(dock, remaining);
+  }
+
+  function openModal() {
+    modalOpen = true;
+    bar.classList.remove('is-in');
+    document.documentElement.classList.remove('gff-docked');
     overlay.classList.add('is-open');
     document.body.style.overflow = 'hidden';
     window.seleqtTrack('gff_modal_view');
+    startTimer();
   }
-  function close() {
-    if (!open) return;
-    open = false;
-    if (!isPreview) {
-      try { localStorage.setItem('seleqt_gff_dismissed', '1'); } catch (e) {}
-    }
-    window.seleqtTrack('gff_dismiss');
+  function dock() {
+    clearTimeout(timerId); timerId = null;
+    if (!modalOpen && document.documentElement.classList.contains('gff-docked')) return;
+    modalOpen = false;
     overlay.classList.remove('is-open');
     document.body.style.overflow = '';
-    setTimeout(() => document.documentElement.classList.remove('gff-on'), 450);
+    document.documentElement.classList.add('gff-docked');
+    syncBarHeight();
+    requestAnimationFrame(() => bar.classList.add('is-in'));
+    if (!isPreview) { try { localStorage.setItem('seleqt_gff_state', 'docked'); } catch (e) {} }
+    window.seleqtTrack('gff_dock');
   }
 
-  // Pop up shortly after arrival so it is unmistakable, but after first paint.
-  setTimeout(show, 900);
+  document.getElementById('gffClose').addEventListener('click', dock);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) dock(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOpen) dock(); });
+  if (card) {
+    card.addEventListener('mouseenter', pauseTimer);
+    card.addEventListener('mouseleave', resumeTimer);
+  }
+  document.getElementById('gffBarMain').addEventListener('click', openModal);
 
-  document.getElementById('gffClose').addEventListener('click', close);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) close(); });
+  const track = (id, ev, loc) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', () => window.seleqtTrack(ev, { location: loc }));
+  };
+  track('gffWhatsApp', 'whatsapp_click', 'gff_modal');
+  track('gffBarWhatsApp', 'whatsapp_click', 'gff_bar');
+  document.getElementById('gffBook').addEventListener('click', () => { window.seleqtTrack('gff_book_click', { location: 'gff_modal' }); dock(); });
+  document.getElementById('gffBarBook').addEventListener('click', () => window.seleqtTrack('gff_book_click', { location: 'gff_bar' }));
 
-  const wa = document.getElementById('gffWhatsApp');
-  if (wa) wa.addEventListener('click', () => window.seleqtTrack('whatsapp_click', { location: 'gff_modal' }));
+  const themeSwitch = document.getElementById('gffThemeSwitch');
+  if (themeSwitch) {
+    themeSwitch.checked = document.documentElement.classList.contains('theme-coder');
+    themeSwitch.addEventListener('change', () => window.seleqtSetTheme(themeSwitch.checked));
+  }
 
-  const book = document.getElementById('gffBook');
-  if (book) book.addEventListener('click', () => {
-    window.seleqtTrack('gff_book_click', { location: 'gff_modal' });
-    close();
+  window.addEventListener('resize', () => {
+    if (document.documentElement.classList.contains('gff-docked')) syncBarHeight();
   });
+
+  // Entry: returning visitor lands on the bar; first visit gets the pop-up.
+  if (document.documentElement.classList.contains('gff-docked')) {
+    syncBarHeight();
+    requestAnimationFrame(() => bar.classList.add('is-in'));
+  } else {
+    setTimeout(openModal, 900);
+  }
 })();

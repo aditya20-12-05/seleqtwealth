@@ -230,6 +230,67 @@
   --rule-strong: 1px solid var(--border-strong);
 }
 
+/* ============================================
+   CODER THEME — refined dark IDE (toggled from the GFF pop-up, site-wide,
+   remembered in localStorage as seleqt_theme=coder). Overrides the design
+   tokens so every token-driven surface flips to a near-black editor look with
+   monospace headings and a green syntax accent.
+   ============================================ */
+html.theme-coder {
+  --navy: #0d1117;
+  --navy-deep: #010409;
+  --navy-mid: #0d1117;
+  --navy-light: #161b22;
+  --navy-accent: #21262d;
+  --ink: #010409;
+
+  --gold: #7ee787;            /* syntax green replaces gold as the accent */
+  --gold-light: #a2f0ad;
+  --gold-deep: #56d364;
+  --gold-dim: rgba(126, 231, 135, 0.32);
+  --gold-faint: rgba(126, 231, 135, 0.08);
+
+  --paper: #0d1117;
+  --paper-soft: #161b22;
+  --paper-deep: #21262d;
+
+  --ink-strong: #c9d1d9;
+  --ink-soft: rgba(201, 209, 217, 0.66);
+  --ink-faint: rgba(201, 209, 217, 0.44);
+  --ink-line: rgba(201, 209, 217, 0.12);
+  --ink-line-strong: rgba(201, 209, 217, 0.22);
+
+  --white: #c9d1d9;
+  --white-dim: rgba(201, 209, 217, 0.62);
+  --white-faint: rgba(201, 209, 217, 0.12);
+  --white-ghost: rgba(201, 209, 217, 0.04);
+
+  --border: rgba(201, 209, 217, 0.10);
+  --border-strong: rgba(201, 209, 217, 0.24);
+  --border-gold: rgba(126, 231, 135, 0.42);
+
+  --font-display: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace;
+
+  background: #0d1117;
+  color-scheme: dark;
+}
+html.theme-coder body { background: var(--paper); color: var(--ink-strong); }
+/* Keep the primary CTA legible: dark text on the green accent. */
+html.theme-coder .btn-primary,
+html.theme-coder .nav-cta { color: #06210c !important; }
+/* Softer, IDE-like scrollbar + selection. */
+html.theme-coder ::selection { background: rgba(126, 231, 135, 0.28); }
+/* Monospace glyphs are wider than the serif; keep big display type from clipping. */
+html.theme-coder .hero-title.hero-title-oneline {
+  white-space: normal;
+  font-size: clamp(1.8rem, 4vw, 3.4rem);
+  line-height: 1.15;
+}
+html.theme-coder .hero-title,
+html.theme-coder .section-title,
+html.theme-coder h1,
+html.theme-coder h2 { overflow-wrap: break-word; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -5054,6 +5115,166 @@ html.gff-on .gff-modal-overlay.is-open .gff-modal { transform: none; }
   .gff-modal-title { font-size: 1.66rem; }
   .gff-modal-msg { font-size: 0.96rem; }
   .gff-modal-actions { flex-direction: column; }
+}
+
+/* 15s auto-dock timer: a quiet depleting line across the top of the pop-up. */
+.gff-progress {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.gff-progress-bar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #35c8f0;
+}
+
+/* ============================================
+   GFF DOCKED BAR — where the pop-up collapses to (close / 15s). Sits above the
+   fixed nav (offset by --gff-bar-h, measured in main.js). Click the label to
+   reopen the pop-up; the switch flips the site-wide developer theme.
+   ============================================ */
+.gff-bar { display: none; }
+html.gff-docked { --gff-bar-h: 52px; }
+html.gff-docked #navbar { top: var(--gff-bar-h); }
+html.gff-docked .gff-bar {
+  display: block;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1001;
+  background: linear-gradient(90deg, #1b0b5e, #6510f5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  transform: translateY(-100%);
+  transition: transform 0.5s var(--ease-out);
+}
+html.gff-docked .gff-bar.is-in { transform: translateY(0); }
+.gff-bar-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 48px;
+}
+.gff-bar-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: var(--font-body);
+  text-align: left;
+  padding: 6px 0;
+}
+.gff-bar-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #ff582f;
+  flex-shrink: 0;
+  animation: gffPulse 2s infinite;
+}
+@keyframes gffPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 88, 47, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(255, 88, 47, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 88, 47, 0); }
+}
+.gff-bar-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gff-bar-label strong { font-weight: 600; color: #ffffff; }
+.gff-bar-hint {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+.gff-bar-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.gff-bar-btn {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 7px;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid transparent;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.gff-bar-btn--wa { background: #ff582f; color: #ffffff; }
+.gff-bar-btn--wa:hover { background: #ff6d49; transform: translateY(-1px); }
+.gff-bar-btn--call { color: #ffffff; border-color: rgba(255, 255, 255, 0.45); }
+.gff-bar-btn--call:hover { border-color: #ffffff; }
+
+/* Developer-theme switch (lives in the docked bar) */
+.gff-switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.gff-switch-input { position: absolute; opacity: 0; width: 0; height: 0; }
+.gff-switch-track {
+  width: 38px; height: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.gff-switch-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 0.2s var(--ease-out);
+}
+.gff-switch-input:checked + .gff-switch-track { background: #7ee787; }
+.gff-switch-input:checked + .gff-switch-track .gff-switch-thumb { transform: translateX(16px); }
+.gff-switch-input:focus-visible + .gff-switch-track { outline: 2px solid #35c8f0; outline-offset: 2px; }
+.gff-switch-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+/* Floating "exit dev mode" chip: appears on every page while the coder theme is
+   on, so a visitor is never stranded in it on a page without the bar. */
+.coder-exit {
+  position: fixed;
+  left: 20px; bottom: 20px;
+  z-index: 999;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #7ee787;
+  background: #161b22;
+  border: 1px solid rgba(126, 231, 135, 0.5);
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  transition: background 0.2s, transform 0.2s;
+}
+.coder-exit:hover { background: #1c232c; transform: translateY(-1px); }
+.coder-exit:focus-visible { outline: 2px solid #7ee787; outline-offset: 3px; }
+
+@media (max-width: 820px) {
+  .gff-bar-inner { padding: 8px 20px; gap: 10px; flex-wrap: wrap; }
+  .gff-bar-hint { display: none; }
+  .gff-bar-btn--call { display: none; }
+  .gff-bar-label { font-size: 0.82rem; white-space: normal; }
 }
 
 /* ============================================

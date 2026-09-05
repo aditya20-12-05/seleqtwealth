@@ -97,21 +97,28 @@
         var iso = t.getFullYear() + '-' +
           String(t.getMonth() + 1).padStart(2, '0') + '-' +
           String(t.getDate()).padStart(2, '0');
-        var inWindow = iso >= START && iso <= END &&
-          localStorage.getItem('seleqt_gff_dismissed') !== '1';
+        var inWindow = iso >= START && iso <= END;
         if (preview || inWindow) {
-          document.documentElement.classList.add('gff-on');
-          if (preview) document.documentElement.classList.add('gff-preview');
+          var el = document.documentElement;
+          el.classList.add('gff-on');
+          if (preview) {
+            el.classList.add('gff-preview');
+          } else if (localStorage.getItem('seleqt_gff_state') === 'docked') {
+            el.classList.add('gff-docked'); // returning visitor: show the bar, not the pop-up
+          }
         }
       } catch (e) {}
     })();
   </script>
+  <!-- Coder-theme pre-paint (site-wide, remembered) -->
+  <script>(function(){try{if(localStorage.getItem("seleqt_theme")==="coder")document.documentElement.classList.add("theme-coder");}catch(e){}})();</script>
 </head>
 <body>
 
-  <!-- GFF 2026 welcome pop-up (time-boxed; controlled by html.gff-on) -->
+  <!-- GFF 2026 welcome pop-up + docked bar (time-boxed; controlled by html.gff-on) -->
   <div class="gff-modal-overlay" id="gffModal" role="dialog" aria-modal="true" aria-labelledby="gffModalTitle">
     <div class="gff-modal">
+      <span class="gff-progress" aria-hidden="true"><span class="gff-progress-bar" id="gffProgress"></span></span>
       <button class="gff-modal-close" id="gffClose" type="button" aria-label="Close">&times;</button>
       <span class="gff-modal-eyebrow">SELEQT is at</span>
       <h2 class="gff-modal-title" id="gffModalTitle">Global Fintech Fest <span class="gff-modal-year">2026</span></h2>
@@ -125,6 +132,27 @@
         <a class="gff-mbtn gff-mbtn--call" id="gffBook" href="#contact">Book a call</a>
       </div>
       <div class="gff-modal-brand">SELEQT &middot; Private Wealth</div>
+    </div>
+  </div>
+
+  <!-- GFF docked bar: the pop-up collapses to this after close / 15s. Click the
+       label to reopen; the switch flips the site's developer theme. -->
+  <div class="gff-bar" id="gffBar" role="region" aria-label="Global Fintech Fest 2026">
+    <div class="gff-bar-inner">
+      <button class="gff-bar-main" id="gffBarMain" type="button" aria-label="Reopen Global Fintech Fest details">
+        <span class="gff-bar-dot" aria-hidden="true"></span>
+        <span class="gff-bar-label">SELEQT at <strong>Global Fintech Fest 2026</strong></span>
+        <span class="gff-bar-hint" aria-hidden="true">expand</span>
+      </button>
+      <div class="gff-bar-actions">
+        <a class="gff-bar-btn gff-bar-btn--wa" id="gffBarWhatsApp" href="https://wa.me/919426669596?text=Hi%20SELEQT%2C%20we%20met%20at%20Global%20Fintech%20Fest%202026.%20I%27d%20love%20to%20learn%20more." target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a class="gff-bar-btn gff-bar-btn--call" id="gffBarBook" href="#contact">Book a call</a>
+        <label class="gff-switch" title="Developer theme">
+          <input type="checkbox" class="gff-switch-input" id="gffThemeSwitch" aria-label="Toggle developer theme" autocomplete="off" />
+          <span class="gff-switch-track"><span class="gff-switch-thumb"></span></span>
+          <span class="gff-switch-text">&lt;/&gt; Dev mode</span>
+        </label>
+      </div>
     </div>
   </div>
 
