@@ -91,7 +91,7 @@
   <script>
     (function() {
       try {
-        var START = '2026-09-08', END = '2026-09-14';
+        var START = '2026-09-08', END = '2026-09-11';
         var preview = window.location.search.indexOf('gff') !== -1; // ?gff previews it any day
         var t = new Date();
         var iso = t.getFullYear() + '-' +
@@ -111,7 +111,7 @@
     })();
   </script>
   <!-- Coder-theme pre-paint (site-wide, remembered) -->
-  <script>(function(){try{if(localStorage.getItem("seleqt_theme")==="coder")document.documentElement.classList.add("theme-coder");}catch(e){}})();</script>
+  <script>(function(){try{var d=new Date(),iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(iso>"2026-09-11"){localStorage.removeItem("seleqt_theme");}else if(localStorage.getItem("seleqt_theme")==="coder"){document.documentElement.classList.add("theme-coder");}}catch(e){}})();</script>
 </head>
 <body>
 
