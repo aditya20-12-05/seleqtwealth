@@ -293,17 +293,43 @@ html.theme-coder {
   --border-strong: rgba(192, 202, 245, 0.26);
   --border-gold: rgba(125, 207, 255, 0.42);
 
-  --font-display: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Headings stay in the elegant serif (mono at display size reads tacky). Mono
+     is used only for the small "code" accents listed below. */
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   background: #1a1b26;
   color-scheme: dark;
 }
 html.theme-coder body { background: var(--paper); color: var(--ink-strong); }
 
+/* Mono only on small accents: nav, labels, numbers, CTAs, meta, tags. */
+html.theme-coder .nav-links a,
+html.theme-coder .nav-cta,
+html.theme-coder [class*="eyebrow"],
+html.theme-coder .sc-index, html.theme-coder .sc-index-current, html.theme-coder .sc-index-total,
+html.theme-coder .sc-cta, html.theme-coder .about-cta, html.theme-coder .insight-cta,
+html.theme-coder .btn-primary, html.theme-coder .btn-secondary,
+html.theme-coder .stat-num, html.theme-coder .stat-label,
+html.theme-coder .contact-label,
+html.theme-coder .insight-category, html.theme-coder .article-category,
+html.theme-coder .insight-read-time, html.theme-coder .article-meta-top, html.theme-coder time,
+html.theme-coder .footer-col h2, html.theme-coder .word-counter {
+  font-family: var(--font-mono);
+}
+
 /* Re-darken surfaces that use bare --navy as a BACKGROUND (now flipped light). */
 html.theme-coder .statement-band,
 html.theme-coder .serve,
 html.theme-coder .cookie-banner { background: #16161e; }
+
+/* The scroll-cards' cream "active/near" backing -> dark surface. */
+html.theme-coder .sc-item[data-i="0"].is-active::after,
+html.theme-coder .sc-item[data-i="1"].is-active::after,
+html.theme-coder .sc-item[data-i="2"].is-active::after { background: rgba(36, 40, 59, 0.72); }
+html.theme-coder .sc-item[data-i="0"].is-near::after,
+html.theme-coder .sc-item[data-i="1"].is-near::after,
+html.theme-coder .sc-item[data-i="2"].is-near::after { background: rgba(36, 40, 59, 0.34); }
+html.theme-coder .sc-item[data-i="3"] + .sc-item::before { background: rgba(192, 202, 245, 0.10); }
 
 /* Hardcoded cream surfaces -> dark. */
 html.theme-coder #navbar.scrolled {
@@ -313,16 +339,14 @@ html.theme-coder #navbar.scrolled {
 html.theme-coder #navbar.scrolled .mobile-menu { background: rgba(22, 22, 30, 0.97); }
 html.theme-coder .floating-back.is-on-paper { background: rgba(36, 40, 59, 0.92); color: var(--ink-strong); }
 
-/* Primary CTA: dark text on the cyan accent. */
-html.theme-coder .btn-primary,
-html.theme-coder .nav-cta { color: #0a1420 !important; }
+/* Filled cyan CTAs get dark text; the outline nav-cta keeps its cyan text at
+   rest and only flips dark when it fills on hover. */
+html.theme-coder .btn-primary { color: #0a1420 !important; }
+html.theme-coder .nav-cta:hover,
+html.theme-coder #navbar.scrolled .nav-cta:hover { color: #0a1420 !important; }
 html.theme-coder ::selection { background: rgba(125, 207, 255, 0.30); }
 
-/* Keep the breathing hero exactly as the light theme: serif font + gold italic. */
-html.theme-coder .hero-title,
-html.theme-coder .hero-title-center,
-html.theme-coder .hero-wordmark,
-html.theme-coder .hero-wordmark-spotlight { font-family: 'Cormorant Garamond', serif; }
+/* Keep the breathing hero's gold italic accent (rest of the hero is serif too). */
 html.theme-coder .hero .hero-title em.italic,
 html.theme-coder .hero-title.hero-title-oneline em.italic { color: #b8924e; }
 
