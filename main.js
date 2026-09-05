@@ -1432,44 +1432,49 @@ function isInViewport(el) {
   });
 })();
 
-// ── GFF 2026 welcome ribbon ─────────────────────────────────────────
+// ── GFF 2026 welcome pop-up ─────────────────────────────────────────
 // Shown only during the fest window (html.gff-on is set pre-paint in
-// index.html). Measures its own height into --gff-h so the fixed nav offset
-// stays correct at any breakpoint, reveals after the hero intro, tracks the two
-// CTAs (consent-gated via seleqtTrack), and remembers dismissal for the window.
+// index.html, or via ?gff). Opens shortly after load, tracks the two CTAs
+// (consent-gated via seleqtTrack), closes on x / scrim / Escape, and remembers
+// dismissal for the window (never in ?gff preview mode).
 (function() {
   if (!document.documentElement.classList.contains('gff-on')) return;
-  const ribbon = document.getElementById('gffRibbon');
-  if (!ribbon) return;
+  const overlay = document.getElementById('gffModal');
+  if (!overlay) return;
+  const isPreview = document.documentElement.classList.contains('gff-preview');
+  let open = false;
 
-  function syncHeight() {
-    document.documentElement.style.setProperty('--gff-h', ribbon.offsetHeight + 'px');
+  function show() {
+    open = true;
+    overlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    window.seleqtTrack('gff_modal_view');
   }
-  syncHeight();
-  window.addEventListener('resize', syncHeight);
-
-  // Reveal after the hero intro settles (nav fades in ~3.2s); sooner if no intro.
-  const delay = document.documentElement.classList.contains('intro-active') ? 3600 : 600;
-  setTimeout(() => {
-    syncHeight();
-    ribbon.classList.add('is-visible');
-    window.seleqtTrack('gff_ribbon_view');
-  }, delay);
-
-  const wa = document.getElementById('gffWhatsApp');
-  if (wa) wa.addEventListener('click', () => window.seleqtTrack('whatsapp_click', { location: 'gff_ribbon' }));
-
-  const book = document.getElementById('gffBook');
-  if (book) book.addEventListener('click', () => window.seleqtTrack('gff_book_click', { location: 'gff_ribbon' }));
-
-  const closeBtn = document.getElementById('gffClose');
-  if (closeBtn) closeBtn.addEventListener('click', () => {
-    // In ?gff preview mode, don't persist dismissal (so the real fest display is unaffected).
-    if (!document.documentElement.classList.contains('gff-preview')) {
+  function close() {
+    if (!open) return;
+    open = false;
+    if (!isPreview) {
       try { localStorage.setItem('seleqt_gff_dismissed', '1'); } catch (e) {}
     }
     window.seleqtTrack('gff_dismiss');
-    ribbon.classList.remove('is-visible');
-    setTimeout(() => document.documentElement.classList.remove('gff-on'), 560);
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(() => document.documentElement.classList.remove('gff-on'), 450);
+  }
+
+  // Pop up shortly after arrival so it is unmistakable, but after first paint.
+  setTimeout(show, 900);
+
+  document.getElementById('gffClose').addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) close(); });
+
+  const wa = document.getElementById('gffWhatsApp');
+  if (wa) wa.addEventListener('click', () => window.seleqtTrack('whatsapp_click', { location: 'gff_modal' }));
+
+  const book = document.getElementById('gffBook');
+  if (book) book.addEventListener('click', () => {
+    window.seleqtTrack('gff_book_click', { location: 'gff_modal' });
+    close();
   });
 })();

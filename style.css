@@ -4928,114 +4928,132 @@ html.intro-running .hero-wordmark-spotlight {
 }
 
 /* ============================================
-   GFF 2026 WELCOME RIBBON
-   Time-boxed event bar, shown only when <html> has .gff-on (set pre-paint in
-   index.html for the fest date window). Sits above the fixed nav; its height is
-   measured into --gff-h by main.js so the nav offset stays correct responsively.
+   GFF 2026 WELCOME POP-UP
+   Prominent centered modal, shown only when <html> has .gff-on (set pre-paint in
+   index.html for the fest date window, or via ?gff). Styled to the official
+   Global Fintech Fest palette: indigo/purple gradient, cyan year, orange CTA.
    ============================================ */
-.gff-ribbon { display: none; }
-html.gff-on { --gff-h: 56px; }
-html.gff-on #navbar { top: var(--gff-h); }
-html.gff-on .gff-ribbon {
-  display: block;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1001;
-  background: linear-gradient(90deg, var(--navy-deep, #060e1c), var(--navy));
-  border-bottom: 1px solid var(--border-gold);
-  transform: translateY(-100%);
-  transition: transform 0.55s var(--ease-out);
-}
-html.gff-on .gff-ribbon.is-visible { transform: translateY(0); }
-.gff-inner {
-  max-width: 1600px;
-  margin: 0 auto;
+.gff-modal-overlay { display: none; }
+html.gff-on .gff-modal-overlay {
   display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
   align-items: center;
-  gap: 16px;
-  padding: 9px 48px;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(8, 5, 26, 0.74);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-out);
 }
-.gff-label {
-  flex-shrink: 0;
-  font-family: var(--font-body);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--navy-deep, #060e1c);
-  background: var(--gold);
-  padding: 5px 10px;
-  border-radius: 2px;
-}
-.gff-msg {
-  flex: 1;
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--white-dim, rgba(244, 241, 234, 0.86));
-  white-space: nowrap;
+html.gff-on .gff-modal-overlay.is-open { opacity: 1; pointer-events: auto; }
+
+.gff-modal {
+  position: relative;
+  width: 100%;
+  max-width: 468px;
+  padding: 42px 38px 30px;
+  border-radius: 18px;
+  background:
+    radial-gradient(130% 100% at 100% 0%, rgba(255, 88, 47, 0.30) 0%, rgba(255, 88, 47, 0) 46%),
+    linear-gradient(150deg, #1b0b5e 0%, #3a18c8 56%, #6510f5 100%);
+  box-shadow: 0 34px 90px rgba(10, 5, 40, 0.62);
+  color: #ffffff;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-.gff-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.gff-btn {
+  transform: translateY(24px) scale(0.96);
+  transition: transform 0.5s var(--ease-out);
   font-family: var(--font-body);
-  font-size: 0.78rem;
+}
+html.gff-on .gff-modal-overlay.is-open .gff-modal { transform: none; }
+
+.gff-modal-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.74);
+  margin-bottom: 10px;
+}
+.gff-modal-title {
+  font-family: var(--font-body);
+  font-size: 2rem;
+  line-height: 1.06;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 14px;
+  color: #ffffff;
+}
+.gff-modal-year { color: #35c8f0; }
+.gff-modal-where {
+  font-size: 0.86rem;
   font-weight: 500;
-  letter-spacing: 0.03em;
-  padding: 9px 16px;
-  border-radius: 2px;
-  text-decoration: none;
-  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 18px;
+}
+.gff-modal-msg {
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.94);
+  margin: 0 0 28px;
+}
+.gff-modal-actions { display: flex; gap: 12px; }
+.gff-mbtn {
+  flex: 1;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  border: 1px solid transparent;
-  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 14px 16px;
+  border-radius: 9px;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out), background 0.2s, border-color 0.2s;
 }
-.gff-btn--wa { background: var(--gold); color: var(--navy-deep, #060e1c); }
-.gff-btn--wa:hover { background: var(--gold-light); transform: translateY(-1px); }
-.gff-btn--wa svg { display: block; }
-.gff-btn--call { color: var(--white); border-color: var(--white-faint, rgba(244, 241, 234, 0.28)); }
-.gff-btn--call:hover { border-color: var(--gold); color: var(--gold); }
-.gff-close {
-  flex-shrink: 0;
+.gff-mbtn--wa { background: #ff582f; color: #ffffff; }
+.gff-mbtn--wa:hover { background: #ff6d49; transform: translateY(-2px); }
+.gff-mbtn--wa svg { display: block; }
+.gff-mbtn--call { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.5); }
+.gff-mbtn--call:hover { border-color: #ffffff; background: rgba(255, 255, 255, 0.10); }
+.gff-modal-close {
+  position: absolute;
+  top: 14px; right: 16px;
   background: none;
   border: none;
-  color: var(--white-faint, rgba(244, 241, 234, 0.5));
-  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.7rem;
   line-height: 1;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 4px 8px;
   transition: color 0.2s;
 }
-.gff-close:hover { color: var(--white); }
-.gff-btn:focus-visible,
-.gff-close:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
-
-@media (max-width: 900px) {
-  .gff-inner { padding: 9px 24px; gap: 12px; }
-  .gff-msg { font-size: 0.84rem; }
+.gff-modal-close:hover { color: #ffffff; }
+.gff-modal-brand {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
 }
-@media (max-width: 640px) {
-  .gff-inner {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 11px 14px 12px;
-    position: relative;
-  }
-  .gff-label { display: none; }
-  .gff-msg {
-    white-space: normal;
-    overflow: visible;
-    font-size: 0.82rem;
-    line-height: 1.4;
-    padding-right: 24px;
-  }
-  .gff-actions { gap: 8px; }
-  .gff-btn { flex: 1; justify-content: center; padding: 10px; }
-  .gff-close { position: absolute; top: 8px; right: 10px; }
+.gff-mbtn:focus-visible,
+.gff-modal-close:focus-visible { outline: 2px solid #35c8f0; outline-offset: 3px; }
+
+@media (max-width: 480px) {
+  .gff-modal { padding: 36px 24px 26px; border-radius: 16px; }
+  .gff-modal-title { font-size: 1.66rem; }
+  .gff-modal-msg { font-size: 0.96rem; }
+  .gff-modal-actions { flex-direction: column; }
 }
 
 /* ============================================
