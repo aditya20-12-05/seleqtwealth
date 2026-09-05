@@ -1,6 +1,29 @@
 /* Self-hosted fonts — Cormorant Garamond + Outfit (latin, latin-ext).
    Generated from Google Fonts woff2; swap display; only needed
    subsets/weights download via unicode-range. */
+/* JetBrains Mono (Apache-2.0, self-hosted) — used only by the coder theme, so it
+   downloads lazily when that theme is active. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/jetbrains-mono-400-normal-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/jetbrains-mono-500-normal-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/jetbrains-mono-700-normal-latin.woff2') format('woff2');
+}
 @font-face {
   font-family: 'Cormorant Garamond';
   font-style: italic;
@@ -231,65 +254,77 @@
 }
 
 /* ============================================
-   CODER THEME — refined dark IDE (toggled from the GFF pop-up, site-wide,
-   remembered in localStorage as seleqt_theme=coder). Overrides the design
-   tokens so every token-driven surface flips to a near-black editor look with
-   monospace headings and a green syntax accent.
+   CODER THEME — "Tokyo Night" dark IDE (toggled from the GFF pop-up, site-wide,
+   remembered as seleqt_theme=coder). Deep indigo editor palette, cyan accent,
+   JetBrains Mono headings. --navy is used across the site as dark TEXT on light
+   surfaces, so it is flipped LIGHT here (keeps those headings readable); the few
+   surfaces that use --navy as a dark BACKGROUND are re-darkened below.
    ============================================ */
 html.theme-coder {
-  --navy: #0d1117;
-  --navy-deep: #010409;
-  --navy-mid: #0d1117;
-  --navy-light: #161b22;
-  --navy-accent: #21262d;
-  --ink: #010409;
+  --navy: #c0caf5;          /* was dark heading text -> light so it stays legible */
+  --navy-deep: #c0caf5;
+  --navy-mid: #24283b;      /* dark surface (services / principles) */
+  --navy-light: #2f334d;    /* dark surface hover */
+  --navy-accent: #2f334d;
+  --ink: #16161e;           /* darkest surface: hero / contact / footer */
 
-  --gold: #7ee787;            /* syntax green replaces gold as the accent */
-  --gold-light: #a2f0ad;
-  --gold-deep: #56d364;
-  --gold-dim: rgba(126, 231, 135, 0.32);
-  --gold-faint: rgba(126, 231, 135, 0.08);
+  --gold: #7dcfff;          /* cyan accent replaces gold */
+  --gold-light: #a9dfff;
+  --gold-deep: #5ab0e8;
+  --gold-dim: rgba(125, 207, 255, 0.30);
+  --gold-faint: rgba(125, 207, 255, 0.08);
 
-  --paper: #0d1117;
-  --paper-soft: #161b22;
-  --paper-deep: #21262d;
+  --paper: #1a1b26;
+  --paper-soft: #24283b;
+  --paper-deep: #2f334d;
 
-  --ink-strong: #c9d1d9;
-  --ink-soft: rgba(201, 209, 217, 0.66);
-  --ink-faint: rgba(201, 209, 217, 0.44);
-  --ink-line: rgba(201, 209, 217, 0.12);
-  --ink-line-strong: rgba(201, 209, 217, 0.22);
+  --ink-strong: #c0caf5;
+  --ink-soft: rgba(192, 202, 245, 0.68);
+  --ink-faint: rgba(192, 202, 245, 0.46);
+  --ink-line: rgba(192, 202, 245, 0.12);
+  --ink-line-strong: rgba(192, 202, 245, 0.22);
 
-  --white: #c9d1d9;
-  --white-dim: rgba(201, 209, 217, 0.62);
-  --white-faint: rgba(201, 209, 217, 0.12);
-  --white-ghost: rgba(201, 209, 217, 0.04);
+  --white: #c0caf5;
+  --white-dim: rgba(192, 202, 245, 0.64);
+  --white-faint: rgba(192, 202, 245, 0.12);
+  --white-ghost: rgba(192, 202, 245, 0.04);
 
-  --border: rgba(201, 209, 217, 0.10);
-  --border-strong: rgba(201, 209, 217, 0.24);
-  --border-gold: rgba(126, 231, 135, 0.42);
+  --border: rgba(192, 202, 245, 0.12);
+  --border-strong: rgba(192, 202, 245, 0.26);
+  --border-gold: rgba(125, 207, 255, 0.42);
 
-  --font-display: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace;
+  --font-display: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  background: #0d1117;
+  background: #1a1b26;
   color-scheme: dark;
 }
 html.theme-coder body { background: var(--paper); color: var(--ink-strong); }
-/* Keep the primary CTA legible: dark text on the green accent. */
-html.theme-coder .btn-primary,
-html.theme-coder .nav-cta { color: #06210c !important; }
-/* Softer, IDE-like scrollbar + selection. */
-html.theme-coder ::selection { background: rgba(126, 231, 135, 0.28); }
-/* Monospace glyphs are wider than the serif; keep big display type from clipping. */
-html.theme-coder .hero-title.hero-title-oneline {
-  white-space: normal;
-  font-size: clamp(1.8rem, 4vw, 3.4rem);
-  line-height: 1.15;
+
+/* Re-darken surfaces that use bare --navy as a BACKGROUND (now flipped light). */
+html.theme-coder .statement-band,
+html.theme-coder .serve,
+html.theme-coder .cookie-banner { background: #16161e; }
+
+/* Hardcoded cream surfaces -> dark. */
+html.theme-coder #navbar.scrolled {
+  background: rgba(22, 22, 30, 0.86);
+  border-bottom-color: rgba(192, 202, 245, 0.12);
 }
+html.theme-coder #navbar.scrolled .mobile-menu { background: rgba(22, 22, 30, 0.97); }
+html.theme-coder .floating-back.is-on-paper { background: rgba(36, 40, 59, 0.92); color: var(--ink-strong); }
+
+/* Primary CTA: dark text on the cyan accent. */
+html.theme-coder .btn-primary,
+html.theme-coder .nav-cta { color: #0a1420 !important; }
+html.theme-coder ::selection { background: rgba(125, 207, 255, 0.30); }
+
+/* Keep the breathing hero exactly as the light theme: serif font + gold italic. */
 html.theme-coder .hero-title,
-html.theme-coder .section-title,
-html.theme-coder h1,
-html.theme-coder h2 { overflow-wrap: break-word; }
+html.theme-coder .hero-title-center,
+html.theme-coder .hero-wordmark,
+html.theme-coder .hero-wordmark-spotlight { font-family: 'Cormorant Garamond', serif; }
+html.theme-coder .hero .hero-title em.italic,
+html.theme-coder .hero-title.hero-title-oneline em.italic { color: #b8924e; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -5030,6 +5065,24 @@ html.gff-on .gff-modal-overlay.is-open { opacity: 1; pointer-events: auto; }
 }
 html.gff-on .gff-modal-overlay.is-open .gff-modal { transform: none; }
 
+/* Docking: the pop-up flies UP and shrinks toward the bar so the movement reads. */
+html.gff-on .gff-modal-overlay.is-docking { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+html.gff-on .gff-modal-overlay.is-docking .gff-modal {
+  transform: translateY(-46vh) scale(0.26);
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.6, 0, 0.35, 1), opacity 0.5s ease;
+}
+
+/* Theme-switch "code rain" transition overlay (canvas injected by main.js). */
+.theme-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: #0b0b12;
+  opacity: 0;
+}
+
 .gff-modal-eyebrow {
   display: inline-block;
   font-size: 0.72rem;
@@ -5238,7 +5291,7 @@ html.gff-docked .gff-bar.is-in { transform: translateY(0); }
   background: #ffffff;
   transition: transform 0.2s var(--ease-out);
 }
-.gff-switch-input:checked + .gff-switch-track { background: #7ee787; }
+.gff-switch-input:checked + .gff-switch-track { background: #7dcfff; }
 .gff-switch-input:checked + .gff-switch-track .gff-switch-thumb { transform: translateX(16px); }
 .gff-switch-input:focus-visible + .gff-switch-track { outline: 2px solid #35c8f0; outline-offset: 2px; }
 .gff-switch-text {
@@ -5258,9 +5311,9 @@ html.gff-docked .gff-bar.is-in { transform: translateY(0); }
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.78rem;
   font-weight: 600;
-  color: #7ee787;
+  color: #7dcfff;
   background: #161b22;
-  border: 1px solid rgba(126, 231, 135, 0.5);
+  border: 1px solid rgba(125, 207, 255, 0.5);
   border-radius: 8px;
   padding: 9px 14px;
   cursor: pointer;
@@ -5268,7 +5321,7 @@ html.gff-docked .gff-bar.is-in { transform: translateY(0); }
   transition: background 0.2s, transform 0.2s;
 }
 .coder-exit:hover { background: #1c232c; transform: translateY(-1px); }
-.coder-exit:focus-visible { outline: 2px solid #7ee787; outline-offset: 3px; }
+.coder-exit:focus-visible { outline: 2px solid #7dcfff; outline-offset: 3px; }
 
 @media (max-width: 820px) {
   .gff-bar-inner { padding: 8px 20px; gap: 10px; flex-wrap: wrap; }

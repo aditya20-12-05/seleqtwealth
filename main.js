@@ -1453,12 +1453,69 @@ function isInViewport(el) {
     if (exitChip) exitChip.hidden = !on;
   }
 
-  window.seleqtSetTheme = function(coder) {
+  let fxRunning = false;
+
+  function applyTheme(coder) {
     document.documentElement.classList.toggle('theme-coder', coder);
     try { localStorage.setItem('seleqt_theme', coder ? 'coder' : 'default'); } catch (e) {}
     document.querySelectorAll('.gff-switch-input').forEach((el) => { el.checked = coder; });
     refreshChip(coder);
+  }
+
+  // "Code rain": a full-screen matrix of digits that unravels down when entering
+  // dev mode and up when leaving, swapping the theme under cover at the midpoint.
+  function codeRain(coder, onSwap, onDone) {
+    const cvs = document.createElement('canvas');
+    cvs.className = 'theme-fx';
+    document.body.appendChild(cvs);
+    const ctx = cvs.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const fs = 16;
+    let cols = 0, drops = [];
+    (function size() {
+      cvs.width = window.innerWidth * dpr; cvs.height = window.innerHeight * dpr;
+      cvs.style.width = window.innerWidth + 'px'; cvs.style.height = window.innerHeight + 'px';
+      ctx.font = (fs * dpr) + 'px "JetBrains Mono", ui-monospace, monospace';
+      cols = Math.ceil(cvs.width / (fs * dpr));
+      for (let i = 0; i < cols; i++) drops[i] = Math.random() * (cvs.height / (fs * dpr));
+    })();
+    const chars = '01{}[]<>/\\=+*#$;:.'.split('');
+    const accent = coder ? '#7dcfff' : '#c8a35a';
+    const dir = coder ? 1 : -1;
+    const t0 = performance.now(), DUR = 1050, SWAP = 430;
+    let swapped = false;
+    function frame(now) {
+      const t = now - t0;
+      ctx.fillStyle = 'rgba(11,11,18,0.22)';
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+      ctx.fillStyle = accent;
+      for (let i = 0; i < cols; i++) {
+        ctx.fillText(chars[(Math.random() * chars.length) | 0], i * fs * dpr, drops[i] * fs * dpr);
+        drops[i] += dir * (0.5 + Math.random() * 0.7);
+        if (dir > 0 && drops[i] * fs * dpr > cvs.height && Math.random() > 0.97) drops[i] = 0;
+        if (dir < 0 && drops[i] * fs * dpr < 0 && Math.random() > 0.97) drops[i] = cvs.height / (fs * dpr);
+      }
+      cvs.style.opacity = t < 200 ? (t / 200) : (t > DUR - 320 ? Math.max(0, (DUR - t) / 320) : 1);
+      if (!swapped && t >= SWAP) { swapped = true; onSwap(); }
+      if (t < DUR) requestAnimationFrame(frame);
+      else { cvs.remove(); onDone(); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  window.seleqtSetTheme = function(coder) {
+    if (fxRunning) return;
     window.seleqtTrack('theme_toggle', { theme: coder ? 'coder' : 'default' });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { applyTheme(coder); return; }
+    fxRunning = true;
+    codeRain(coder, function() { applyTheme(coder); }, function() { fxRunning = false; });
+    // Safety net: if requestAnimationFrame is throttled (tab hidden mid-swap),
+    // make sure the theme still resolves and the lock clears.
+    setTimeout(function() {
+      applyTheme(coder);
+      fxRunning = false;
+      document.querySelectorAll('.theme-fx').forEach(function(c) { c.remove(); });
+    }, 1600);
   };
 
   refreshChip(document.documentElement.classList.contains('theme-coder'));
@@ -1523,6 +1580,7 @@ function isInViewport(el) {
 
   function openModal() {
     modalOpen = true;
+    overlay.classList.remove('is-docking');
     bar.classList.remove('is-in');
     document.documentElement.classList.remove('gff-docked');
     overlay.classList.add('is-open');
@@ -1534,13 +1592,16 @@ function isInViewport(el) {
     clearTimeout(timerId); timerId = null;
     if (!modalOpen && document.documentElement.classList.contains('gff-docked')) return;
     modalOpen = false;
-    overlay.classList.remove('is-open');
+    // Fly the pop-up up + shrink into the bar (keep is-open during the flight so
+    // the card stays painted; is-docking overrides its transform to the up-shrink).
+    overlay.classList.add('is-docking');
     document.body.style.overflow = '';
     document.documentElement.classList.add('gff-docked');
     syncBarHeight();
     requestAnimationFrame(() => bar.classList.add('is-in'));
     if (!isPreview) { try { localStorage.setItem('seleqt_gff_state', 'docked'); } catch (e) {} }
     window.seleqtTrack('gff_dock');
+    setTimeout(() => { overlay.classList.remove('is-open', 'is-docking'); }, 620);
   }
 
   document.getElementById('gffClose').addEventListener('click', dock);
