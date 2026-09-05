@@ -1464,7 +1464,10 @@ function isInViewport(el) {
 
   const closeBtn = document.getElementById('gffClose');
   if (closeBtn) closeBtn.addEventListener('click', () => {
-    try { localStorage.setItem('seleqt_gff_dismissed', '1'); } catch (e) {}
+    // In ?gff preview mode, don't persist dismissal (so the real fest display is unaffected).
+    if (!document.documentElement.classList.contains('gff-preview')) {
+      try { localStorage.setItem('seleqt_gff_dismissed', '1'); } catch (e) {}
+    }
     window.seleqtTrack('gff_dismiss');
     ribbon.classList.remove('is-visible');
     setTimeout(() => document.documentElement.classList.remove('gff-on'), 560);
